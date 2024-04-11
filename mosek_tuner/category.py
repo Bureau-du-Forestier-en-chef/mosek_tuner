@@ -25,6 +25,7 @@ class CategoricalParameter(SolverParameter):
         """Generate a new parameter"""
         self._save(p_time)
         new_parameter = deepcopy(self)
+        new_parameter._time = float('inf')
         if (new_parameter.__index < len(new_parameter.__values)-1):
             new_parameter.__index+=1
         else:

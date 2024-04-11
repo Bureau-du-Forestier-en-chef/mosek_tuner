@@ -32,6 +32,7 @@ class NumericalParameter(SolverParameter):
             BEST_ONE = SORTED_LIST[0]
         self._save(p_time)
         new_parameter = deepcopy(self)
+        new_parameter._time = float('inf')
         if BEST_ONE is None:#No data
             new_parameter.__value = self.__lower + NumericalParameter.__divide_by_two(self.__value - self.__lower)
         elif (self <  BEST_ONE): #the new solution is better then go on the left
@@ -96,6 +97,15 @@ if __name__ == "__main__":
     parameter2 = NumericalParameter("test2",1.45,20.56,10)
     assert((float(parameter2.get_value())-11) < 1)
     print("test get_value done!")
+    print("test generate")
+    parameter_stock = NumericalParameter("test1",10,10,0)
+    assert(parameter_stock.get_best() is not None)
+    new_parameter = parameter_stock.generate(10)
+    assert(new_parameter is not None)
+    b1 = parameter2.get_best()
+    b2 = parameter2.generate(10).get_best()
+    assert(not b1 == b2)
+    print("test generate done!")
     print("test name")
     assert(parameter.name == "test1")
     print("test name done!")

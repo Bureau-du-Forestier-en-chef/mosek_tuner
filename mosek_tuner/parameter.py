@@ -19,14 +19,14 @@ class SolverParameter(ABC):
         if not p_name:
             raise RuntimeError("Empty parameter name")
         self._name = p_name
-        self._time = None
+        self._time = float('inf')
         self._tested = []
         self._maximal_test = p_maximal_tests
     def get_best(self)->SolverParameter:
         """Get best parameter value found"""
-        bestParameter = None
+        bestParameter = deepcopy(self)
         if len(self._tested) >0:
-            bestParameter = sorted(self._tested)[0]
+            bestParameter = deepcopy(sorted(self._tested)[0])
         return bestParameter
     @property
     def name(self)->str:

@@ -5,6 +5,7 @@ from copy import deepcopy
 from logging import basicConfig,info,INFO
 from category import CategoricalParameter
 from numerical import NumericalParameter
+from parameter import SolverParameter
 from os.path import isfile
 from csv import DictReader
 
@@ -56,7 +57,7 @@ class ParametersTuner:
             info("Running time of "+str(best_time)+" at iteration "+iteration)
             parameters = ParametersTuner.__get_parameters(CURRENT_RUNNTIME)
             iteration +=1
-    def __read_parameters(p_path_to_parameters:Path)->[]:
+    def __read_parameters(p_path_to_parameters:Path)->[SolverParameter]:
         """From a .csv file read the parameters we want to optimize first column is the parameter name
         lower_bound,upper_bound,categories (separated by |) if categories not empty it wont look at bound"""
         parameters = []
@@ -90,7 +91,7 @@ class ParametersTuner:
                     parameters.append(NumericalParameter(PARAMETER_NAME,lower,upper,n_tests))
         info("Read "+str(len(parameters))+" parameters")
         return parameters  
-    def __write_parameters(p_parameters:[],p_best_time:float=float("inf"),p_name:str="mosek.par")->None:
+    def __write_parameters(p_parameters:[SolverParameter],p_best_time:float=float("inf"),p_name:str="mosek.par")->None:
         """Write down the parameters in a mosek parameter file"""
         with Path(p_name).open() as parameters_file:
             parameters_file.write("BEGIN MOSEK")
@@ -102,13 +103,12 @@ class ParametersTuner:
     def __get_time(p_log:str)->float:
         """Get the time took to run Mosek infinite if non feasible"""
         value = float('inf')
-        #OPTIMAL = compile("Problem[\s\t]*status[\s\t]*:[\s\t]*PRIMAL_AND_DUAL_FEASIBLE")
         if  search("Problem[\s\t]*status[\s\t]*:[\s\t]*PRIMAL_AND_DUAL_FEASIBLE",p_log):
             time = search("(Optimizer[\s\t]*-[\s\t]*time:[\s\t]*)([0-9]*[.][0-9]*)",p_log)
             if time:
                 value = float(time.group(2))
         return value
-    def __get_parameters(p_parameters:[],p_time:float)->[]:
+    def __get_parameters(p_parameters:[SolverParameter],p_time:float)->[SolverParameter]:
         """Get new values for different parameters"""
         new_parameter = []
         for parameter in p_parameters:
@@ -117,7 +117,7 @@ class ParametersTuner:
             else:
                 new_parameter.append(parameter.get_best())
         return new_parameter
-    def __can_change_parameters(p_parameters:[])->bool:
+    def __can_change_parameters(p_parameters:[SolverParameter])->bool:
         """Return true true any parameters can be changed"""
         for parameter in p_parameters:
             if parameter.can_change():
@@ -128,9 +128,9 @@ class ParametersTuner:
         parameters = ["mosek.exe","-p","mosek.par"]
         if p_max:
             parameters.append("-max")
-        parameters.append(p_problem)
+        parameters.append(str(p_problem))
         result = run(parameters, capture_output=True, text=True)
-        return ParametersTuner.__get_time(result.stdout.decode('utf-8'))
+        return ParametersTuner.__get_time(result.stdout)
    
             
 
@@ -159,8 +159,12 @@ if __name__ == "__main__":
     assert(can_move==6)
     assert(len(parameters)==7)
     print("test read_parameters done!")
+    print("test get_parameters")
+    new_parameters = ParametersTuner._ParametersTuner__get_parameters(parameters,10.0)
+    assert(len(new_parameters)==7)
+    assert(not new_parameters == parameters)
+    print("test get_parameters done!")
     print("test run mosek")
-    result = ParametersTuner._ParametersTuner__run_mosek(Path(),True)
-    assert(len(result)>0)
+    assert (ParametersTuner._ParametersTuner__run_mosek(Path("tests/test.lp"),True)-1 <= 0)
     print("test run mosek done")
     print("Unit tests for Tuner done!")
