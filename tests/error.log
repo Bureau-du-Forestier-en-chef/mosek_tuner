@@ -1,0 +1,4 @@
+Reading par file - mosek.par
+MOSEK error 1217: The parameter value string 'mosek_1.par' for parameter MSK_DPAR_OPTIMIZER_MAX_TIME is incorrect.     
+done reading. Time: 0.00
+Return code - 1217  [MSK_RES_ERR_PARAM_VALUE_STR]

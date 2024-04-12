@@ -1,4 +1,9 @@
 *.vcxproj
+*.par
 *.sol
 *.bas
+tests/*.sol
+tests/*.bas
+tests/*.par
+tests/temp/
 /mosek_tuner/__pycache__/*
