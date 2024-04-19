@@ -1,5 +1,5 @@
 from __future__ import annotations
-from parameter import SolverParameter
+from .parameter import SolverParameter
 from copy import deepcopy
 
 class CategoricalParameter(SolverParameter):
@@ -17,23 +17,39 @@ class CategoricalParameter(SolverParameter):
         if len(p_values)==0:
             raise RuntimeError("No categories provided for parameter named "+p_name)
         self.__values = p_values
-        self.__index = 0
+        if len(p_values) > 1:
+            self.__index = None
+        else:
+            self.__index = 0
     def get_value(self)->str:
         """Get the value of the parameter"""
-        return self.__values[self.__index]
+        returned = None
+        if self.__index is not None:
+            returned = self.__values[self.__index]
+        return returned
     def generate(self,p_time:float)->CategoricalParameter:
         """Generate a new parameter"""
         self._save(p_time)
         new_parameter = deepcopy(self)
         new_parameter._time = float('inf')
-        if (new_parameter.__index < len(new_parameter.__values)-1):
-            new_parameter.__index+=1
-        else:
+        if new_parameter.__index is None:
             new_parameter.__index = 0
+        else:
+            if (new_parameter.__index < len(new_parameter.__values)-1):
+                new_parameter.__index+=1
+            else:
+                new_parameter.__index = 0
         return new_parameter
     def can_change(self) -> bool:
         """Return true if you have multiple categories"""
         return super().can_change() and len(self.__values) > 1 and len(self._tested) != len(self.__values)
+    def __str__(self)->str:
+        """Get the string representation of the parameter"""
+        value = ""
+        if self.__index is not None:
+            value = self.name +" "+self.get_value()
+        return value
+
     
 if __name__ == "__main__":
     print("Unit tests for CategoricalParameter")
@@ -42,7 +58,7 @@ if __name__ == "__main__":
     assert (regular_cat.name == "test_param")
     print("test name done!")
     print("test get_value")
-    assert regular_cat.get_value() == "val1"
+    assert regular_cat.get_value() == None
     print("test get_value done!")
     print("test can_change")
     assert regular_cat.can_change() == True
@@ -58,7 +74,7 @@ if __name__ == "__main__":
     print("test name equal")
     assert new_param.name == regular_cat.name
     print("test name equal done!")
-    sequence = ["val3","val1","val2","val3"]
+    sequence = ["val2","val3","val1","val2"]
     tested = []
     for index in range(0,4):
         new_param = new_param.generate(index)
@@ -82,5 +98,8 @@ if __name__ == "__main__":
         got_exception = True
     assert got_exception
     print("test bad values done!")
+    print("test to str")
+    assert(str(single_cat) == "test_param val1")
+    print("test to str done!")
     print("Unit tests for CategoricalParameter done!")
     

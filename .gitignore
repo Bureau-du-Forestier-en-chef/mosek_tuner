@@ -2,8 +2,10 @@
 *.par
 *.sol
 *.bas
+__pycache__/*
+temp/*
 tests/*.sol
 tests/*.bas
 tests/*.par
-tests/temp/
+tests/temp/*
 /mosek_tuner/__pycache__/*
