@@ -1,36 +1,38 @@
-<a href = "./README.fr.md"><img src = "https://img.shields.io/badge/%F0%9F%87%AB%F0%9F%87%B7-Click%20here%20for%20a%20french%20version-blue?style=flat-square" height="25" /></a>
+<a href = "./README.md"><img src = "https://img.shields.io/badge/%F0%9F%87%A8%F0%9F%87%A6-Cliquez%20ici%20pour%20la%20version%20anglaise-red?style=flat-square" height="25" /></a>
 
-## Parameters tuner for Mosek
+## Accordeur de paramètres pour Mosek
 
-The objective of the tuner is to reduce the amount of time spent on solving a problem using [Mosek](https://www.mosek.com/).
-by tuning the solver's parameters. 
+L'objectif du tuner est de réduire le temps passé à résoudre un problème à l'aide de [Mosek](https://www.mosek.com/).
+en ajustant les paramètres du solveur.
 
-### How
 
-First, you need to [Mosek installed](https://www.mosek.com/downloads/) on your machine. 
+### Comment
 
-<p>Starting without any parameters the tuner will solve the problem using Mosek and find the initial solving time. 
-Then starting with the first parameter in the csv file it will try to decrease the amount of time spent on solving by 
-doing binary search on numerical parameter and enumeration for categorical parameters. 
-If after 5 tries no decrease in solving time is observe then it will go to the next parameter.
-For numerical parameter it will also stop the search when it reach the maximal number
-of tests.</p>
+Tout d'abord, vous devez [installez Mosek](https://www.mosek.com/downloads/) sur votre machine.
 
-### Inputs
-<p>For tuning Mosek's parameters you need a problem file (.mps/.lp) and also a 
-csv file containing the parameters you want to tune.</p>
+<p>En démarrant sans aucun paramètre, le tuner résoudra le problème à l'aide de Mosek et trouvera le temps de résolution initial.
+Ensuite, en commençant par le premier paramètre du fichier csv, il tentera de réduire le temps consacré à la résolution en
+effectuer une recherche binaire sur les paramètres numériques et une énumération des paramètres catégoriels.
+Si après 5 essais aucune diminution du temps de résolution n’est observée alors on passera au paramètre suivant.
+Pour les paramètres numériques, la recherche s'arrêtera également lorsqu'elle atteindra le nombre maximal.
+de tests.</p>
 
-Columns description:
+
+### Intrants
+<p>Pour régler les paramètres de Mosek, vous avez besoin d'un fichier de problèmes (.mps/.lp) ainsi que d'un
+fichier csv contenant les paramètres que vous souhaitez régler.</p>
+
+Description des colonnes :
  - name
-   - A valid parameter (https://docs.mosek.com/latest/cmdtools/parameters.html#doc-all-parameter-list)
+   - Un paramètre valide (https://docs.mosek.com/latest/cmdtools/parameters.html#doc-all-
  - lower
-   - The minimal value for int or float parameter
+   - La valeur minimale du paramètre int ou float
  - upper
-   - The maximal value for int or float parameter
+   - La valeur maximale du paramètre int ou float
  - tests
-   - The maximal numbers of tests done on float or int parameter
+   - Le nombre maximal de tests effectués sur le paramètre float ou int
  - categories
-   - The values tested for categorical parameter 
+   - Les valeurs testées pour le paramètre catégoriel
 
 | name                      | lower   | upper   | tests | categories                                             |
 |:--------------------------|:-------:|:-------:|:-----:|:------------------------------------------------------:|
@@ -38,8 +40,8 @@ Columns description:
 |MSK_IPAR_BI_CLEAN_OPTIMIZER|         |         |       |MSK_OPTIMIZER_DUAL_SIMPLEX\|MSK_OPTIMIZER_PRIMAL_SIMPLEX|
 |MSK_IPAR_BI_MAX_ITERATIONS |999999999|999999999|       |                                                        |
 
-### Run
-Launch the tuner:
+### Exécuter
+Lancez le tuner :
 
 ```bat
 mkdir temp
@@ -48,11 +50,12 @@ pushd temp
 popd
 pause
 ```
-### Outputs
+### Extrants
 
-<p>In the Tuner.log you will find information about the number of time it took to solve your problem.
-Here the initial solving time is 22996.58 seconds. At iteration 1 the solving time is now 15469.78.
-The sensibility of the MSK_DPAR_PRESOLVE_TOL_S is important with a range of 14478.49 to 22996.58 seconds (37%).</p>
+<p>Dans le fichier Tuner.log, vous trouverez des informations sur le temps nécessaire pour résoudre votre problème.
+Ici, le temps de résolution initial est de 22996,58 secondes. À l'itération 1, le temps de résolution est désormais de 15469,78.
+La sensibilité du MSK_DPAR_PRESOLVE_TOL_S est importante avec une plage de 14478,49 à 22996,58 secondes (37%).</p>
+
 ```
 2024-04-19 09:01:57,135: INFO: Reading parameters from ..\tests\mosek_parameters_complete.csv
 2024-04-19 09:01:57,136: INFO: Read 33 parameters
@@ -83,8 +86,9 @@ The sensibility of the MSK_DPAR_PRESOLVE_TOL_S is important with a range of 1447
 2024-04-22 12:19:48,349: INFO: Working on MSK_DPAR_PRESOLVE_TOL_X 1.5625e-05
 ```
 
-<p>In the temp folder you can now see the best parameters found in the mosek_best.par file. The tuner will write
-down the best parameters each time a new parameter value is found to be good.</p>
+<p>Dans le dossier temporaire, vous pouvez maintenant voir les meilleurs paramètres trouvés dans le fichier mosek_best.par. Le tuner écrira
+les meilleurs paramètres chaque fois qu'une nouvelle valeur de paramètre s'avère bonne.</p>
+
 
 ```
 BEGIN MOSEK
@@ -95,7 +99,7 @@ END MOSEK
 
 ## License 
 
-mosek_tuner is a [LiLiQ-R 1.1](https://github.com/Bureau-du-Forestier-en-chef/mosek_tuner/blob/master/LICENSES/EN/LILIQ-R11EN.pdf) licensed library.
+mosek_tuner est une bibliothèque sous licence [LiLiQ-R 1.1](https://github.com/Bureau-du-Forestier-en-chef/mosek_tuner/blob/master/LICENSES/EN/LILIQ-R11EN.pdf) licensed library.
 
 [![License](http://img.shields.io/:license-liliqR11-blue.svg?style=flat-square)](https://forge.gouv.qc.ca/licence/liliq-v1-1/#r%C3%A9ciprocit%C3%A9-liliq-r)
 
