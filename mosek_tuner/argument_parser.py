@@ -1,3 +1,10 @@
+/*
+Copyright (c) 2023 Gouvernement du Québec
+
+SPDX-License-Identifier: LiLiQ-R-1.1
+License-Filename: LICENSES/EN/LiLiQ-R11unicode.txt
+*/
+
 from argparse import ArgumentParser
 from .tuner import ParametersTuner
 from pathlib import Path
